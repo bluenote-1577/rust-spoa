@@ -1,22 +1,18 @@
 // build.rs
-
 extern crate cc;
 extern crate cmake;
-
 use cmake::Config;
 use std::env;
 
 fn main() {
-
-    let dst = Config::new("src/spoa")
-           .define("CMAKE_BUILD_TYPE","Release")
-           .build();
-
-    println!("cargo:rustc-link-search=native={}", dst.display());
-    println!("cargo:rustc-link-lib=static=spoa");
+    // First build zlib
+    // Then build spoa
+    let spoa_dst = Config::new("src/spoa")
+        .define("CMAKE_BUILD_TYPE", "Release")
+        .build();
 
     let out_dir = env::var("OUT_DIR").unwrap();
-    println!("cargo:rustc-flags=-L {}/lib64/ -L {}/lib/", &out_dir, &out_dir);
+
 
     cc::Build::new()
         .cpp(true)
@@ -28,8 +24,18 @@ fn main() {
         .flag_if_supported("-std=c++11")
         .flag_if_supported("-Isrc/spoa/include")
         .flag_if_supported(&format!("-L{}/lib64 -L{}/lib", &out_dir, &out_dir))
-        .flag_if_supported("-lspoa")
         .file("src/poa_func.cpp")
         .compile("poa_func");
 
+
+    // Explicitly specify the library paths
+    println!("cargo:rustc-link-search=native={}/lib", spoa_dst.display());
+    println!("cargo:rustc-link-search=native={}/lib64", spoa_dst.display());
+    
+    // Specify the libraries to link
+    println!("cargo:rustc-link-lib=static=poa_func");
+    println!("cargo:rustc-link-lib=static=spoa");
+    println!("cargo:rustc-link-lib=stdc++");
+
+    println!("cargo:rustc-flags=-L {}/lib64/ -L {}/lib/", &out_dir, &out_dir);
 }

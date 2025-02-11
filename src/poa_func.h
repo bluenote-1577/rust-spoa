@@ -5,6 +5,7 @@
 extern "C" {
 #endif
 unsigned poa_func(char** seqs,        // the sequences (null-terminated) to perform multiple-sequence-alignment with.
+                  char** quals,       // phred quality scores.
                   int num_seqs,       // the number of sequences being multiply aligned
                   char* consensus,    // this chunk of memory will hold the return value, the consensus of the multiple alignment
                   int consensus_len,  // the amount of memory allocated to consensus, i.e. use the MAXIMUM length of the consensus
