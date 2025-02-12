@@ -32,7 +32,11 @@ extern "C" {
         // add each of the real sequences (e.g. noisy sequence reads) to the graph
 
         for (int i = 0; i < num_seqs; i++) {
-            auto alignment = (*alignment_engine)(sequences[i], graph);
+            //GOOD
+            //auto alignment = (*alignment_engine)(sequences[i], graph);
+
+            //TESTING
+            auto alignment = alignment_engine->align(sequences[i], graph);
             graph->add_alignment(alignment, sequences[i], quality_strings[i]);
         }
 
