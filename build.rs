@@ -35,7 +35,12 @@ fn main() {
     // Specify the libraries to link
     println!("cargo:rustc-link-lib=static=poa_func");
     println!("cargo:rustc-link-lib=static=spoa");
-    println!("cargo:rustc-link-lib=stdc++");
+
+    if cfg!(target_os = "macos") {
+    println!("cargo:rustc-link-lib=c++");
+    } else {
+        println!("cargo:rustc-link-lib=stdc++");
+    }
 
     println!("cargo:rustc-flags=-L {}/lib64/ -L {}/lib/", &out_dir, &out_dir);
 }
